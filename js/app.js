@@ -7,7 +7,7 @@ var totalClicks = 0;
 var leftProduct = null;
 var middleProduct = null;
 var rightProduct = null;
-var previousProductIndexes = [];
+var previousProductIndexArr = [];
 
 // *******************************************
 // Constructor - Product
@@ -25,16 +25,44 @@ var randomProductGenerator = function() {
   return Math.floor(Math.random() * (allProducts.length));
 };
 
-// Pick 3 random images with no duplicates from previous image set
-var imagePicker = function() {
+// Render products to the page 
+var renderNewProducts = function(imageIndexArr) {
+  // Get the product image element for left, middle, and right
   var leftProductImage = document.getElementById('left-product-image');
   var middleProductImage = document.getElementById('middle-product-image');
   var rightProductImage = document.getElementById('right-product-image');
 
+  // Get the product name element for left, middle, and right
   var leftProductName = document.getElementById('left-product-name');
   var middleProductName = document.getElementById('middle-product-name');
   var rightProductName = document.getElementById('right-product-name');
 
+  // The new images are now saved into a previous product index array
+  // Only save the index value
+  previousProductIndexArr = [
+    imageIndexArr[0],
+    imageIndexArr[1],
+    imageIndexArr[2]
+  ];
+
+  // Assign the new products to the global left, middle, right product
+  leftProduct = allProducts[imageIndexArr[0]];
+  middleProduct = allProducts[imageIndexArr[1]];
+  rightProduct = allProducts[imageIndexArr[2]];
+
+  // Overwrite the existing image source
+  leftProductImage.src = allProducts[imageIndexArr[0]].imgSrc;
+  middleProductImage.src = allProducts[imageIndexArr[1]].imgSrc;
+  rightProductImage.src = allProducts[imageIndexArr[2]].imgSrc;
+
+  // Overwrite the existing text content
+  leftProductName.textContent = allProducts[imageIndexArr[0]].name;
+  middleProductName.textContent = allProducts[imageIndexArr[1]].name;
+  rightProductName.textContent = allProducts[imageIndexArr[2]].name;
+};
+
+// Pick 3 random images with no duplicates from previous image set
+var imagePicker = function() {
   var imageIndexArr = [];
   var randomNumber;
 
@@ -50,33 +78,18 @@ var imagePicker = function() {
     while (imageIndexArr.length < 3) {
       randomNumber = randomProductGenerator();
 
-      if (previousProductIndexes.indexOf(randomNumber) === -1 && imageIndexArr.indexOf(randomNumber) === -1) {
+      if (previousProductIndexArr.indexOf(randomNumber) === -1 && imageIndexArr.indexOf(randomNumber) === -1) {
         imageIndexArr.push(randomNumber);
       }
     }
   }
 
-  previousProductIndexes = [
-    imageIndexArr[0],
-    imageIndexArr[1],
-    imageIndexArr[2]
-  ];
-
-  leftProduct = allProducts[imageIndexArr[0]];
-  middleProduct = allProducts[imageIndexArr[1]];
-  rightProduct = allProducts[imageIndexArr[2]];
-
-  leftProductImage.src = allProducts[imageIndexArr[0]].imgSrc;
-  middleProductImage.src = allProducts[imageIndexArr[1]].imgSrc;
-  rightProductImage.src = allProducts[imageIndexArr[2]].imgSrc;
-
-  leftProductName.textContent = allProducts[imageIndexArr[0]].name;
-  middleProductName.textContent = allProducts[imageIndexArr[1]].name;
-  rightProductName.textContent = allProducts[imageIndexArr[2]].name;
+  // We got the unique, non duplicate, indexes and no we need to create our new products
+  renderNewProducts(imageIndexArr);
 };
 
 // Create all products and add them to the allProducts array
-var productCreator = function() {
+var buildProducts = function() {
   var products = [
     new Product(1, 'Bag', './img/bag.jpg'),
     new Product(2, 'Banana', './img/banana.jpg'),
@@ -105,7 +118,30 @@ var productCreator = function() {
   }
 };
 
-// Handle the image click!
+var displayResults = function(allProducts) {
+  var resultsContainer = document.getElementById('results-container');
+
+  var h1El = document.createElement('h1');
+  h1El.textContent = 'Results';
+  resultsContainer.appendChild(h1El);
+
+  var ulEl = document.createElement('ul');
+  ulEl.textContent = 'Results';
+  resultsContainer.appendChild(ulEl);
+
+  for (var i = 0; i < allProducts.length; i++) {
+    console.log(allProducts[i]);
+
+    var clicks = allProducts[i].clicks;
+    var name = allProducts[i].name;
+
+    var liEl = document.createElement('li');
+    liEl.textContent = `${clicks} votes for the ${name}.`;
+    ulEl.appendChild(liEl);
+  }
+};
+
+// Handle the user clicking on an image!
 var handleOnClickProduct = function(event) {
   event.preventDefault();
 
@@ -125,16 +161,22 @@ var handleOnClickProduct = function(event) {
       rightProduct.clicks++;
     }
 
+    // Increment times shown for all products displayed in the image set
     leftProduct.timesShown++;
     middleProduct.timesShown++;
     rightProduct.timesShown++;
 
+    // Increment total user clicks
     totalClicks++;
 
+    // Get a new set of product images
     imagePicker();
   } else {
+    // Remove the event listener once the user has clicked 25 times
     productContainer.removeEventListener('click', handleOnClickProduct);
     console.log('allProducts: ', allProducts);
+
+    displayResults(allProducts);
   }
 };
 
@@ -144,7 +186,7 @@ productContainer.addEventListener('click', handleOnClickProduct);
 // Let's start up the app!
 var initApp = function() {
   // Create all products
-  productCreator();
+  buildProducts();
 
   // Pick out 3 random images, no duplicates from previous image set
   imagePicker();
