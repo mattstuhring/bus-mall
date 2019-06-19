@@ -3,22 +3,37 @@
   <head>
     <title>BusMall</title>
 
+    <link href="https://fonts.googleapis.com/css?family=Pacifico|Righteous|Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/style.css">
   </head>
   <body>
     <header>
       <nav>
         <span>
-          <a href="#">BusMall</a>
+          <a href="#"><img src="./img/bus-logo.png" alt=""></a>
         </span>
+
+        <ul>
+          <li class="dot"></li>
+          <li class="dot"></li>
+          <li class="dot"></li>
+        </ul>
       </nav>
     </header>
     <main>
-      <h1>Bus Mall</h1>
 
-      <h3>Welcome, please click the product you like the most.</h3>
+      <section class="intro">
+        <img src="./img/road-sign.png" alt="">
+        <div>
+          <h1>Welcome!</h1>
+          <h3>Thank you for joining our BusMall focus group.</h3>
+          <h4>Click your favorite product from the set.</h4>
+        </div>
+      </section>
 
       <section id="product-container">
+        <img class="bus-image" src="./img/bus-top.png" alt="">
+
         <div id="left-product">
           <img id="left-product-image" src="./img/bag.jpg">
           <p id="left-product-name"></p>
@@ -31,8 +46,13 @@
           <img id="right-product-image" src="./img/dragon.jpg">
           <p id="right-product-name"></p>
         </div>
+        
+        <img class="bus-image" src="./img/bus-bottom.png" alt="">
       </section>
-      <section id="results-container"></section>
+
+      <section id="results-container">
+        <canvas id="resultsChart" width="500px" height="500px"></canvas>
+      </section>
     </main>
 
     <footer>
@@ -41,6 +61,8 @@
         <li><a href="https://github.com/mattstuhring" target="_blank">Matt Stuhring</a></li>
       </ul>
     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
     <script src="./js/app.js"></script>
   </body>
 </html>

@@ -7,7 +7,17 @@ var totalClicks = 0;
 var leftProduct = null;
 var middleProduct = null;
 var rightProduct = null;
-var previousProductIndexArr = [];
+var previousProducts = [];
+
+// Get the product image element for left, middle, and right
+var leftProductImage = document.getElementById('left-product-image');
+var middleProductImage = document.getElementById('middle-product-image');
+var rightProductImage = document.getElementById('right-product-image');
+
+// Get the product name element for left, middle, and right
+var leftProductName = document.getElementById('left-product-name');
+var middleProductName = document.getElementById('middle-product-name');
+var rightProductName = document.getElementById('right-product-name');
 
 // *******************************************
 // Constructor - Product
@@ -25,21 +35,11 @@ var randomProductGenerator = function() {
   return Math.floor(Math.random() * (allProducts.length));
 };
 
-// Render products to the page 
+// Render products to the page
 var renderNewProducts = function(imageIndexArr) {
-  // Get the product image element for left, middle, and right
-  var leftProductImage = document.getElementById('left-product-image');
-  var middleProductImage = document.getElementById('middle-product-image');
-  var rightProductImage = document.getElementById('right-product-image');
-
-  // Get the product name element for left, middle, and right
-  var leftProductName = document.getElementById('left-product-name');
-  var middleProductName = document.getElementById('middle-product-name');
-  var rightProductName = document.getElementById('right-product-name');
-
   // The new images are now saved into a previous product index array
   // Only save the index value
-  previousProductIndexArr = [
+  previousProducts = [
     imageIndexArr[0],
     imageIndexArr[1],
     imageIndexArr[2]
@@ -70,7 +70,7 @@ var imagePicker = function() {
     while (imageIndexArr.length < 3){
       randomNumber = randomProductGenerator();
 
-      if (imageIndexArr.indexOf(randomNumber) === -1) {
+      if (!imageIndexArr.includes(randomNumber)) {
         imageIndexArr.push(randomNumber);
       }
     }
@@ -78,7 +78,7 @@ var imagePicker = function() {
     while (imageIndexArr.length < 3) {
       randomNumber = randomProductGenerator();
 
-      if (previousProductIndexArr.indexOf(randomNumber) === -1 && imageIndexArr.indexOf(randomNumber) === -1) {
+      if (!previousProducts.includes(randomNumber) && !imageIndexArr.includes(randomNumber)) {
         imageIndexArr.push(randomNumber);
       }
     }
@@ -118,46 +118,29 @@ var buildProducts = function() {
   }
 };
 
-var displayResults = function(allProducts) {
-  var resultsContainer = document.getElementById('results-container');
-
-  var h1El = document.createElement('h1');
-  h1El.textContent = 'Results';
-  resultsContainer.appendChild(h1El);
-
-  var ulEl = document.createElement('ul');
-  ulEl.textContent = 'Results';
-  resultsContainer.appendChild(ulEl);
-
-  for (var i = 0; i < allProducts.length; i++) {
-    console.log(allProducts[i]);
-
-    var clicks = allProducts[i].clicks;
-    var name = allProducts[i].name;
-
-    var liEl = document.createElement('li');
-    liEl.textContent = `${clicks} votes for the ${name}.`;
-    ulEl.appendChild(liEl);
-  }
-};
-
 // Handle the user clicking on an image!
 var handleOnClickProduct = function(event) {
   event.preventDefault();
+
+  if (event.target === productContainer) {
+    // console.log('Didnt click on a picture');
+    alert('Didn\'t click on a picture');
+    return;
+  }
 
   if (totalClicks < 25) {
     var target = event.target;
     var id = target.id;
 
-    if (id === 'left-product-image') {
+    if (id === 'left-product-image' || id === 'left-product-name') {
       leftProduct.clicks++;
     }
 
-    if (id === 'middle-product-image') {
+    if (id === 'middle-product-image' || id === 'middle-product-name') {
       middleProduct.clicks++;
     }
 
-    if (id === 'right-product-image') {
+    if (id === 'right-product-image' || id === 'right-product-name') {
       rightProduct.clicks++;
     }
 
@@ -174,9 +157,8 @@ var handleOnClickProduct = function(event) {
   } else {
     // Remove the event listener once the user has clicked 25 times
     productContainer.removeEventListener('click', handleOnClickProduct);
-    console.log('allProducts: ', allProducts);
 
-    displayResults(allProducts);
+    buildResultChart();
   }
 };
 
@@ -194,3 +176,54 @@ var initApp = function() {
 
 // Call the start the app function!
 initApp();
+
+function randomColorRGBA() {
+  var colors = [];
+  var borders = [];
+
+  for (var i = 0; i < allProducts.length; i++) {
+    var r = Math.floor(Math.random() * 256);
+    var g = Math.floor(Math.random() * 256);
+    var b = Math.floor(Math.random() * 256);
+    var a1 = '0.2';
+    var a2 = '1.0';
+    colors.push(`rgba(${r}, ${g}, ${b}, ${a1})`);
+    borders.push(`rgba(${r}, ${g}, ${b}, ${a2})`);
+  }
+
+  return [colors, borders];
+}
+
+function buildResultChart() {
+  var percents = [];
+  var names = [];
+
+  for (var i = 0; i < allProducts.length; i++) {
+    percents.push(Math.floor((allProducts[i].clicks / allProducts[i].timesShown) * 100));
+    names.push(allProducts[i].name);
+  }
+
+  var resultsContainer = document.getElementById('results-container');
+
+  var h1El = document.createElement('h1');
+  h1El.textContent = 'Results';
+  resultsContainer.prepend(h1El);
+
+
+  var resultsChart = document.getElementById('resultsChart').getContext('2d');
+
+  var chartObj = new Chart(resultsChart, {
+    type: 'doughnut',
+    data: {
+      labels: names,
+      datasets: [{
+        label: '% of Products',
+        data: percents,
+        backgroundColor: randomColorRGBA()[0],
+        borderColor: randomColorRGBA()[1],
+        borderWidth: 1
+      }]
+    },
+    options: {}
+  });
+}

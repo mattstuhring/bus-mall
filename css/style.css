@@ -1,9 +1,13 @@
 * {
-  /* outline: 1px solid green; */
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
 }
 
 header {
-  background-color: black;
+  background-color: #222;
   color: white;
   position: fixed;
   top: 0px;
@@ -13,9 +17,52 @@ header {
   width: 100%;
 }
 
+header > nav > span > a > img {
+  width: 75px;
+  margin-left: 25px;
+}
+
+header > nav > ul {
+  margin-right: 20px;
+}
+
+header > nav > ul > li {
+  list-style-type: none;
+}
+
+.dot {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  float: right;
+  margin-right: 20px;
+  position: relative;
+  bottom: 75px;
+  transition: box-shadow .3ms;
+}
+
+.dot:hover {
+  -moz-box-shadow: 0 0 10px #ccc;
+  -webkit-box-shadow: 0 0 10px #ccc;
+  box-shadow: 0 0 10px #ccc;
+}
+
+.dot:first-child {
+  background-color: red;
+}
+
+.dot:nth-child(2) {
+  background-color: #fdc613ff;
+}
+
+.dot:nth-child(3) {
+  background-color: green;
+}
+
 nav {
   height: 75px;
   width: 100%;
+  position: relative;
 }
 
 main {
@@ -24,29 +71,85 @@ main {
   width: 660px;
 }
 
-main > h1 {
-  margin-top: 100px;
+main > section.intro {
+  position: relative;
+  z-index: -1;
+  bottom: 45px;
 }
 
-main > section {
-  height: 200px;
+main > section.intro > div {
+  position: absolute;
+  bottom: 93px;
+  left: 143px;
+  color: white;
+  text-shadow:
+   -1px -1px 0 #000,  
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+     1px 1px 0 #000;
+}
+
+main > section.intro > div > h1 {
+  margin-top: 100px;
+  font-size: 70px;
+  margin-bottom: 10px;
+  font-family: 'Righteous', cursive;
+}
+
+main > section.intro > img {
   width: 100%;
 }
 
-main > section > div {
+main > section#product-container {
+  height: 255px;
+  width: 100%;
+}
+
+main > section#product-container > div:hover {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+main > section#product-container > div {
+  transition: box-shadow .3s;
   float: left;
-  margin-left: 10px;
-  margin-right: 10px;
-  outline: 1px solid black;
+  margin-left: 7px;
+  margin-right: 7px;
+  border: 3px solid #eee;
+  border-radius: 5px;
+  text-align: center;
+  background-color: lightcyan;
+}
+
+main > section#product-container > img.bus-image {
+  width: 100%;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 main > section > div > img {
   width: 200px;
   height: 200px;
+  border-radius: 5px 5px 0px 0px;
+}
+
+#results-container {
+  width: 500px;
+  height: 500px;
+  margin: auto;
+  margin-top: 550px;
+  margin-bottom: 200px;
+}
+
+#results-container > h1 {
+  font-family: 'Righteous', cursive;
+  font-size: 80px;
+  text-decoration: underline;
+  text-align: center;
+  margin-bottom: 15px;
 }
 
 footer {
-  background-color: black;
+  background-color: #222;
   color: white;
   position: fixed;
   left: 0;
@@ -56,10 +159,22 @@ footer {
   text-align: right;
 }
 
+footer > ul {
+  position: relative;
+  top: 10px;
+  margin-right: 26px;
+}
+
 footer > ul > li {
   display: inline;
 }
 
-#results-container {
-  margin-top: 50px;
+footer > ul > li:first-child {
+  font-size: 12px;
+}
+
+footer > ul > li:nth-child(2) > a {
+  font-family: 'Pacifico', cursive;
+  text-decoration: none;
+  color: green;
 }
