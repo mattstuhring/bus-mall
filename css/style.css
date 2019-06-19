@@ -8,7 +8,6 @@ body {
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-position: center;
-  /* background-size: cover; */
 }
 
 header {
@@ -25,6 +24,14 @@ header {
 header > nav > span > a > img {
   width: 75px;
   margin-left: 25px;
+}
+
+header > nav > span > a > img:hover {
+  border-radius: 5px;
+  background-color:  rgba(0,255,0,0.3);
+  -webkit-transition: background-color 1000ms linear;
+  -ms-transition: background-color 1000ms linear;
+  transition: background-color 1000ms linear;
 }
 
 header > nav > ul {
@@ -80,18 +87,19 @@ main > section.intro {
   position: relative;
   z-index: -1;
   bottom: 45px;
+  height: 500px;
 }
 
 main > section.intro > div {
   position: absolute;
-  bottom: 93px;
-  left: 143px;
+  bottom: 60px;
+  left: 150px;
   color: white;
   text-shadow:
-   -1px -1px 0 #000,  
+    -1px -1px 0 #000,  
     1px -1px 0 #000,
     -1px 1px 0 #000,
-     1px 1px 0 #000;
+    1px 1px 0 #000;
 }
 
 main > section.intro > div > h1 {
@@ -130,6 +138,12 @@ main > section#product-container > img.bus-image {
   margin-top: 15px;
 }
 
+.dot:hover {
+  -moz-box-shadow: 0 0 10px #ccc;
+  -webkit-box-shadow: 0 0 10px #ccc;
+  box-shadow: 0 0 10px #ccc;
+}
+
 main > section > div > img {
   width: 200px;
   height: 200px;
@@ -141,7 +155,8 @@ main > section > div > img {
   height: 500px;
   margin: auto;
   margin-top: 550px;
-  margin-bottom: 200px;
+  margin-bottom: 400px;
+  text-align: center;
 }
 
 #results-container > h1 {
@@ -150,6 +165,22 @@ main > section > div > img {
   text-decoration: underline;
   text-align: center;
   margin-bottom: 15px;
+}
+
+#results-container > h3 {
+  margin-top: 50px;
+}
+
+#results-container > a {
+  background-color: red;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 5px;
 }
 
 footer {
@@ -181,4 +212,11 @@ footer > ul > li:nth-child(2) > a {
   font-family: 'Pacifico', cursive;
   text-decoration: none;
   color: green;
+}
+
+footer > ul > li:nth-child(2) > a:hover {
+  -webkit-transition: color 1000ms linear;
+  -ms-transition: color 1000ms linear;
+  transition: color 1000ms linear;
+  color: yellow;
 }
