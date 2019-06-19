@@ -4,6 +4,11 @@
 
 body {
   font-family: 'Roboto', sans-serif;
+  background-image: url('../img/road.png');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  /* background-size: cover; */
 }
 
 header {
@@ -123,7 +128,6 @@ main > section#product-container > div {
 main > section#product-container > img.bus-image {
   width: 100%;
   margin-top: 15px;
-  margin-bottom: 15px;
 }
 
 main > section > div > img {
