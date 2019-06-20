@@ -1,9 +1,11 @@
 'use strict';
 
 // Global Variables
-var productContainer = document.getElementById('product-container');
 var allProducts = [];
 var previousProducts = [];
+var productContainer = document.getElementById('product-container');
+
+// Set default value for left, middle, and right products
 var leftProduct = null;
 var middleProduct = null;
 var rightProduct = null;
@@ -30,56 +32,56 @@ var Product = function (id, name, imgSrc) {
 };
 
 // Generate random number, max & min inclusive
-var getRandomIntInclusive = function(min, max) {
+// ---------------------------------------------
+var getRandomIntInclusive = function (min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-// Render products to the page
-var renderProducts = function (imageIndexArr) {
-  // The new images are now saved into a previous product index array
-  // Only save the index value
-  previousProducts = [
-    imageIndexArr[0],
-    imageIndexArr[1],
-    imageIndexArr[2]
-  ];
-
+// Render products to the DOM
+// --------------------------
+var renderProducts = function (leftIndex, middleIndex, rightIndex) {
   // Assign the new products to the global left, middle, right product
-  leftProduct = allProducts[imageIndexArr[0]];
-  middleProduct = allProducts[imageIndexArr[1]];
-  rightProduct = allProducts[imageIndexArr[2]];
+  leftProduct = allProducts[leftIndex];
+  middleProduct = allProducts[middleIndex];
+  rightProduct = allProducts[rightIndex];
 
   // Overwrite the existing image source
-  leftProductImage.src = allProducts[imageIndexArr[0]].imgSrc;
-  middleProductImage.src = allProducts[imageIndexArr[1]].imgSrc;
-  rightProductImage.src = allProducts[imageIndexArr[2]].imgSrc;
+  leftProductImage.src = allProducts[leftIndex].imgSrc;
+  middleProductImage.src = allProducts[middleIndex].imgSrc;
+  rightProductImage.src = allProducts[rightIndex].imgSrc;
 
   // Overwrite the existing text content
-  leftProductName.textContent = allProducts[imageIndexArr[0]].name;
-  middleProductName.textContent = allProducts[imageIndexArr[1]].name;
-  rightProductName.textContent = allProducts[imageIndexArr[2]].name;
+  leftProductName.textContent = allProducts[leftIndex].name;
+  middleProductName.textContent = allProducts[middleIndex].name;
+  rightProductName.textContent = allProducts[rightIndex].name;
 };
 
 // Pick 3 random images with no duplicates from previous image set
-var imagePicker = function () {
-  var imageIndexArr = [];
+// -----------------------------------------------------------------
+var pickNewImages = function () {
+  var indexArr = [];
   var randomNumber;
 
-  while (imageIndexArr.length < 3) {
+  // Create 3 unique, non duplicate, numbers
+  while (indexArr.length < 3) {
     randomNumber = getRandomIntInclusive(0, allProducts.length - 1);
 
-    if (!previousProducts.includes(randomNumber) && !imageIndexArr.includes(randomNumber)) {
-      imageIndexArr.push(randomNumber);
+    if (!previousProducts.includes(randomNumber) && !indexArr.includes(randomNumber)) {
+      indexArr.push(randomNumber);
     }
   }
 
-  // We got the unique, non duplicate, indexes and no we need to create our new products
-  renderProducts(imageIndexArr);
+  // Keep track of previous products by index
+  previousProducts = [indexArr[0], indexArr[1], indexArr[2]];
+
+  // Render the products located at those indexes to the DOM
+  renderProducts(indexArr[0], indexArr[1], indexArr[2]);
 };
 
 // Create all products and add them to the allProducts array
+// ----------------------------------------------------------
 var buildProducts = function () {
   var products = [
     new Product(1, 'Bag', './img/bag.jpg'),
@@ -104,26 +106,33 @@ var buildProducts = function () {
     new Product(20, 'Wine Glass', './img/wine-glass.jpg')
   ];
 
+  // Add products to the allProducts global array
   for (var i = 0; i < products.length; i++) {
     allProducts.push(products[i]);
   }
 };
 
 // Handle the user clicking on an image!
+// --------------------------------------
 var handleOnClickProduct = function (event) {
   event.preventDefault();
 
   // Get totalClicks from local storage
   var totalClicks = JSON.parse(localStorage.getItem('totalClicks'));
 
+  // If user clicks on the container and not the image or name of product
   if (event.target === productContainer) {
-    // console.log('Didnt click on a picture');
-    alert('Didn\'t click on a picture');
+    console.log('Didn\'t click on an image');
     return;
   }
 
-  console.log(totalClicks);
+  // Increment total user clicks
+  totalClicks++;
 
+  // Set totalClicks from local storage
+  localStorage.setItem('totalClicks', JSON.stringify(totalClicks));
+
+  // Perform when clicks are below 25
   if (totalClicks < 25) {
     var target = event.target;
     var id = target.id;
@@ -140,88 +149,84 @@ var handleOnClickProduct = function (event) {
       rightProduct.clicks++;
     }
 
-    // Increment total user clicks
-    totalClicks++;
-
-    // Set totalClicks from local storage
-    localStorage.setItem('totalClicks', JSON.stringify(totalClicks));
-
     // Increment times shown for all products displayed in the image set
     leftProduct.timesShown++;
     middleProduct.timesShown++;
     rightProduct.timesShown++;
 
     // Get a new set of product images
-    imagePicker();
+    pickNewImages();
   } else {
+    console.log('not its here');
     // Remove the event listener once the user has clicked 25 times
     productContainer.removeEventListener('click', handleOnClickProduct);
 
     localStorage.setItem('products', JSON.stringify(allProducts));
 
-    buildResultChart();
+    buildResultsChart();
 
     console.log(allProducts);
   }
 };
 
 // Event listener - product
+// ---------------------------
 productContainer.addEventListener('click', handleOnClickProduct);
 
 // RGBA Random Color Generator for both background & border colors
 // ----------------------------------------------------------------
 function randomColorRGBA() {
   var colors = [];
-  var borders = [];
 
   for (var i = 0; i < allProducts.length; i++) {
     var r = Math.floor(Math.random() * 256);
     var g = Math.floor(Math.random() * 256);
     var b = Math.floor(Math.random() * 256);
-    var a1 = '0.2';
-    var a2 = '1.0';
-    colors.push(`rgba(${r}, ${g}, ${b}, ${a1})`);
-    borders.push(`rgba(${r}, ${g}, ${b}, ${a2})`);
+    var a = '0.8';
+    colors.push(`rgba(${r}, ${g}, ${b}, ${a})`);
   }
 
-  return [colors, borders];
+  return colors;
 }
 
-// Render the results chart to the canvas
-// ---------------------------------------
-function buildResultChart() {
-  var products = JSON.parse(localStorage.getItem('products'));
-  var percents = [];
-  var names = [];
+// Create element, add content, and append it to the parent
+// ---------------------------------------------------------
+var elementBuilder = function (el, content, parent) {
+  var child = document.createElement(el);
+  child.textContent = content;
+  parent.appendChild(child);
 
-  for (var i = 0; i < products.length; i++) {
-    var percent = Math.floor((products[i].clicks / products[i].timesShown) * 100);
+  return child;
+};
 
-    if (isNaN(percent)) {
-      percent = 0;
-    }
+// Create link DOM element
+// ------------------------
+var linkBuilder = function (el, content, path, parent) {
+  // Build link - reset button
+  var linkEl = document.createElement(el);
+  linkEl.innerHTML = content;
+  linkEl.href = path;
+  parent.appendChild(linkEl);
 
-    percents.push(percent);
-    names.push(products[i].name);
-  }
+  return linkEl;
+};
 
-  var resultsContainer = document.getElementById('results-container');
-
-  var h1El = document.createElement('h1');
-  h1El.textContent = 'Results';
-  resultsContainer.prepend(h1El);
-
+// Chart.js object
+// -----------------
+function chartJS(names, percents) {
+  // Get the canvas element
   var resultsChart = document.getElementById('resultsChart').getContext('2d');
 
-  var chartObj = new Chart(resultsChart, {
+  // Create chart.js
+  return new Chart(resultsChart, {
     type: 'horizontalBar',
     data: {
       labels: names,
       datasets: [{
-        label: 'Clicks per Times Shown',
+        label: '% of Votes',
         data: percents,
-        backgroundColor: randomColorRGBA()[0],
-        borderColor: randomColorRGBA()[1],
+        backgroundColor: randomColorRGBA(),
+        borderColor: randomColorRGBA(),
         borderWidth: 1
       }]
     },
@@ -233,32 +238,82 @@ function buildResultChart() {
           maxBarThickness: 8,
           minBarLength: 2,
           gridLines: {
-            offsetGridLines: true
+            offsetGridLines: true,
+            display: false
+          }
+        }],
+        yAxes: [{
+          gridLines: {
+            display: false
           }
         }]
       }
     }
   });
+}
 
-  var h3El = document.createElement('h3');
-  h3El.textContent = 'Thank you for participating!  Click reset to try again.';
-  resultsContainer.appendChild(h3El);
+// Calculate the product data - percent & names
+// ----------------------------------------------
+function calculatePercentsAndNames() {
+  // Get local storage products
+  var products = JSON.parse(localStorage.getItem('products'));
+  var percents = [];
+  var names = [];
 
-  var linkEl = document.createElement('a');
-  linkEl.innerHTML = 'Reset';
-  linkEl.href = '#top';
-  resultsContainer.appendChild(linkEl);
+  // Calculate the percents for each product
+  for (var i = 0; i < products.length; i++) {
+    var percent = Math.floor((products[i].clicks / products[i].timesShown) * 100);
 
-  linkEl.addEventListener('click', function() {
+    if (isNaN(percent)) {
+      percent = 0;
+    }
+
+    percents.push(percent);
+    names.push(products[i].name);
+  }
+
+  return [percents, names];
+}
+
+// Render the results chart to the canvas
+// ---------------------------------------
+function buildResultsChart() {
+  // Grab the parent container for the results
+  var resultsContainer = document.getElementById('results-container');
+
+  // h3 element text
+  var h3Str = 'Thank you for participating!  Click reset to try again.';
+
+  // Get percents & names data
+  var percents = calculatePercentsAndNames()[0];
+  var names = calculatePercentsAndNames()[1];
+
+  // Build h1 - reset title
+  var h1El = document.createElement('h1');
+  h1El.textContent = 'Results';
+  resultsContainer.prepend(h1El);
+
+  // Build results chart and popluate with data
+  chartJS(names, percents);
+
+  // Build h3 - user message
+  elementBuilder('h3', h3Str, resultsContainer);
+
+  // Build link - reset
+  var linkEl = linkBuilder('a', 'Reset', '#top', resultsContainer);
+
+  // Add link click event, reset app
+  linkEl.addEventListener('click', function () {
+    // Remove all location storage
     localStorage.clear();
 
+    // Cheat - reload the page
     location.reload();
   });
 }
 
-
-
-// Let's start building the app!
+// Let's building the app!
+// -------------------------------
 var initApp = function () {
   // Setup local storage for total clicks
   if (!JSON.parse(localStorage.getItem('totalClicks'))) {
@@ -273,7 +328,7 @@ var initApp = function () {
   buildProducts();
 
   // Pick out 3 random images, no duplicates from previous image set
-  imagePicker();
+  pickNewImages();
 
   // If 25 totalClicks
   if (JSON.parse(localStorage.getItem('totalClicks')) === 25) {
@@ -281,9 +336,10 @@ var initApp = function () {
     productContainer.removeEventListener('click', handleOnClickProduct);
 
     // Build the results chart.js
-    buildResultChart();
+    buildResultsChart();
   }
 };
 
-// Start the app function!
+// Start the app!
+// ---------------------------
 initApp();
