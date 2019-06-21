@@ -157,15 +157,12 @@ var handleOnClickProduct = function (event) {
     // Get a new set of product images
     pickNewImages();
   } else {
-    console.log('not its here');
     // Remove the event listener once the user has clicked 25 times
     productContainer.removeEventListener('click', handleOnClickProduct);
 
     localStorage.setItem('products', JSON.stringify(allProducts));
 
     buildResultsChart();
-
-    console.log(allProducts);
   }
 };
 
