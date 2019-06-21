@@ -21,3 +21,13 @@
 - As the marketing team, we want a well designed UI.  The user needs to presented the products with the proper presentation.
 
 - As the marketing team, we want to keep track of all of our necessary data.  This data is super important to us and needs to be properly tracked so we can consume it for further research.
+
+## User
+
+- As a user, I want to be able to recieve instructions on what I should be doing when going to the webpage.
+
+- As a user, I want to interact with the UI and know where to navigate without instructions.  I should be able to understand the webpage layout with visuals and a clear layout.  
+
+- As a user, I want to know when I should stop clicking and be notified what I should do next. 
+
+- As a user, I want to see my results and know what I did click on the most.  It would be cool if I could try the focus group again with some option letting me how to accomplish that.
