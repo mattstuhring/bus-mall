@@ -22,12 +22,12 @@
 
 - As the marketing team, we want to keep track of all of our necessary data.  This data is super important to us and needs to be properly tracked so we can consume it for further research.
 
-## User
+## Focus Group
 
-- As a user, I want to be able to recieve instructions on what I should be doing when going to the webpage.
+- As a focus group, I want to be able to receive instructions on what I should be doing when first landing on the webpage.
 
-- As a user, I want to interact with the UI and know where to navigate without instructions.  I should be able to understand the webpage layout with visuals and a clear layout.  
+- As a focus group, I want to interact with the UI and know where to navigate without instructions.  I should be able to understand the webpage layout with visuals and a clear layout.  
 
-- As a user, I want to know when I should stop clicking and be notified what I should do next. 
+- As a focus group, I want to know when I my task is complete and be notified what I should do next. 
 
-- As a user, I want to see my results and know what I did click on the most.  It would be cool if I could try the focus group again with some option letting me how to accomplish that.
+- As a focus group, I want to see my results and know what I did click on the most.  It would be cool if I could try the focus group again with some option letting me how to accomplish that.
